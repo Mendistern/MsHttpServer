@@ -1,5 +1,7 @@
 package dev.generationz.httpserver.server;
 
+import dev.generationz.httpserver.model.FirstLine;
+import dev.generationz.httpserver.parsers.FirstLineParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +31,12 @@ public class MsHttpServer {
             InputStream is = clientSocket.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader bf = new BufferedReader(isr);
-            log.info("Request received\nMessage:\n{}", bf.readLine());
+            String firstLineStr = bf.readLine();
+            log.info("Request received\nMessage:\n{}", firstLineStr);
 
+            FirstLine firstLine = FirstLineParser.getInstance().parseFirstLine(firstLineStr);
+
+            System.out.println(firstLine);
             PrintWriter pw = new PrintWriter(clientSocket.getOutputStream(), true);
             pw.write("HTTP/1.1 200 OK\r\n\r\nclear");
             pw.close();
